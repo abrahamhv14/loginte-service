@@ -1,0 +1,5 @@
+info:
+  app:
+    name: Login Service
+    description: Microservicio para la autenticacion de usuarios
+    version: 1.0.0
