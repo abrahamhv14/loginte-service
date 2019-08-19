@@ -3,3 +3,36 @@ info:
     name: Login Service
     description: Microservicio para la autenticacion de usuarios
     version: 1.0.0
+    
+spring:
+#  datasource:
+#    initialize: false
+#    hibernate:
+#      ddl-auto: update
+#    url: jdbc:mysql://localhost:3306/uaemusu
+#    username: root
+#    password: root
+#    driver-class-name: com.mysql.jdbc.Driver
+#    tomcat:
+#      max-active: 200
+#
+#  jpa:
+#    database-platform:  org.hibernate.dialect.MySQL5InnoDBDialect
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        show-sql: true
+#        use_sql_comments: true
+#        format_sql: true
+        
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+#      username: admin
+#      password: admin
+      database: login
+      repositories:
+        type: auto
+      authentication-database: login
