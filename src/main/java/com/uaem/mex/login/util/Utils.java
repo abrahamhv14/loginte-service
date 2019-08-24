@@ -1,21 +1,38 @@
 package com.uaem.mex.login.util;
 
+import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.crypto.spec.SecretKeySpec;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Clase Utileria con metodos estaticos para su uso en la capa de negocio.
+ * Clase Utileria con métodos estaticos para su uso en la capa de negocio.
  * 
  * @author abrahamhv
  *
  */
+@Slf4j
 public final class Utils {
 
-	private static final Logger log = LoggerFactory.getLogger(Utils.class);
+	/**
+	 * Nombre del esquema de cifrado que será utilizado
+	 */
+	private static final String AES = "AES";
+
+	/**
+	 * Nombre de la función hash que es utilizada
+	 */
+	private static final String SHA1 = "SHA-1";
+
+	/**
+	 * Llave para encriptar
+	 */
+	private static final String KEY_CLV = "!*?MySuperSecretKe&&S@nt@nderT@p!*#";
 
 	/**
 	 * Instantiates a new utils.
@@ -64,6 +81,60 @@ public final class Utils {
 			log.error("***Error al parsear fecha***");
 		}
 		return fechaDate;
+	}
+
+	/**
+	 * Encripta una cadena de texto con la clave swap, utilizando el Algoritmo AES
+	 * 
+	 * @param textoPlano cadena de texto plano que se desea encriptar
+	 * @return String cadena de texto encriptada
+	 * @throws Exception
+	 * @throws EncryptException
+	 */
+	public static String encriptar(String textoPlano) throws Exception {
+		SecretKeySpec sks = getSecretKey();
+		return UtilsAes.encrypt(textoPlano, sks);
+	}
+
+	/**
+	 * Desencripta una cadena de texto con la clave swap, utilizando el Algoritmo
+	 * AES
+	 * 
+	 * @param textoEncriptado cadena de texto encriptado que se desea desencriptar
+	 * @return String cadena de texto desencriptada
+	 * @throws Exception
+	 * @throws EncryptException
+	 */
+	public static String desencriptar(String textoEncriptado) throws Exception {
+		try {
+			SecretKeySpec sks = getSecretKey();
+
+			return UtilsAes.decrypt(textoEncriptado, sks);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Genera una llave secreta de tipo SecretKeySpec apartir de la llave secreta.
+	 * 
+	 * @return SecretKeySpec lla secreta
+	 * @throws Exception
+	 * @throws EncryptException
+	 */
+	private static SecretKeySpec getSecretKey() throws Exception {
+		MessageDigest sha;
+		byte[] key = null;
+		try {
+			key = UtilsAes.getBytes(KEY_CLV);
+
+			sha = MessageDigest.getInstance(SHA1);
+			key = sha.digest(key);
+			key = Arrays.copyOf(key, 16);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage(), e);
+		}
+		return new SecretKeySpec(key, AES);
 	}
 
 }

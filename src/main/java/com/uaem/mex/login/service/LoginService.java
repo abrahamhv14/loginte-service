@@ -13,13 +13,25 @@ import com.uaem.mex.login.repository.ILoginRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * @author abrahamhv
+ *
+ */
 @Slf4j
 @Service
 public class LoginService implements ILoginService {
 
+	/** The login repository. */
 	@Autowired
 	private ILoginRepository loginRepository;
 
+	/**
+	 * Gets the user.
+	 *
+	 * @param request the request
+	 * @return the user
+	 */
 	@Override
 	public UsuarioLogin getUser(LoginRequest request) {
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
