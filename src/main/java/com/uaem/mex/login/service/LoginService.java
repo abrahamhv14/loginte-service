@@ -1,6 +1,7 @@
 package com.uaem.mex.login.service;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LoginService implements ILoginService {
 
-	/** The login repository. */
+	/** Objeto que obtiene los metodos para persistir la B.D. */
 	@Autowired
 	private ILoginRepository loginRepository;
 
 	/**
-	 * Gets the user.
+	 * Metodo que obtiene las operaciones CRUD de los registros de la B.D.
 	 *
-	 * @param request the request
+	 * @param request Objeto con los datos de logueo del usurio.
 	 * @return the user
 	 */
 	@Override
@@ -45,11 +46,14 @@ public class LoginService implements ILoginService {
 		usuario.setFecha(new Date());
 		usuario.setSecretKey(request.getSecretKey());
 
-		this.loginRepository.save(usuario);
 
-		log.info("USUARIO: " + gson.toJson(this.loginRepository.findById(request.getUsername())));
+		Optional<UsuarioLogin> response = loginRepository.findById(request.getUsername());
 
-		return null;
+		if (response.isPresent()) {
+			log.info("USUARIO: " + gson.toJson(response));
+		}
+
+		return response.orElse(new UsuarioLogin());
 	}
 
 }
