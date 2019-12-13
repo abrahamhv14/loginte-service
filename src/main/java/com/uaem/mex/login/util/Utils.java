@@ -8,6 +8,8 @@ import java.util.Date;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import com.uaem.mex.login.exception.AppLoginException;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -84,16 +86,24 @@ public final class Utils {
 	}
 
 	/**
-	 * Encripta una cadena de texto con la clave swap, utilizando el Algoritmo AES
+	 * Encripta una cadena de texto con la clave dada, utilizando el Algoritmo AES
 	 * 
 	 * @param textoPlano cadena de texto plano que se desea encriptar
 	 * @return String cadena de texto encriptada
-	 * @throws Exception
-	 * @throws EncryptException
+	 * @throws AppLoginException 
 	 */
-	public static String encriptar(String textoPlano) throws Exception {
-		SecretKeySpec sks = getSecretKey();
-		return UtilsAes.encrypt(textoPlano, sks);
+	public static String encriptar(String textoPlano) throws AppLoginException {
+		String claveEncriptada = null;
+
+		SecretKeySpec sks;
+		try {
+			sks = getSecretKey();
+			claveEncriptada = UtilsAes.encrypt(textoPlano, sks);
+		} catch (Exception e) {
+			throw new AppLoginException(e.getMessage(), e);
+		}
+
+		return claveEncriptada;
 	}
 
 	/**
@@ -102,16 +112,15 @@ public final class Utils {
 	 * 
 	 * @param textoEncriptado cadena de texto encriptado que se desea desencriptar
 	 * @return String cadena de texto desencriptada
-	 * @throws Exception
-	 * @throws EncryptException
+	 * @throws AppLoginException
 	 */
-	public static String desencriptar(String textoEncriptado) throws Exception {
+	public static String desencriptar(String textoEncriptado) throws AppLoginException {
 		try {
 			SecretKeySpec sks = getSecretKey();
 
 			return UtilsAes.decrypt(textoEncriptado, sks);
 		} catch (Exception e) {
-			throw new Exception(e.getMessage(), e);
+			throw new AppLoginException(e.getMessage(), e);
 		}
 	}
 
@@ -120,7 +129,6 @@ public final class Utils {
 	 * 
 	 * @return SecretKeySpec lla secreta
 	 * @throws Exception
-	 * @throws EncryptException
 	 */
 	private static SecretKeySpec getSecretKey() throws Exception {
 		MessageDigest sha;

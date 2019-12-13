@@ -1,10 +1,23 @@
 package com.uaem.mex.login.exception;
 
-public class AppLoginException extends RuntimeException {
+/**
+ * 
+ * @author Abraham-H-V
+ *
+ */
+public class AppLoginException extends Exception {
 
 	/**
 	 * Serial UID
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public AppLoginException(String message) {
+		super(message);
+	}
+	
+	public AppLoginException(String message, Throwable exception) {
+		super(message, exception);
+	}
 
 }
